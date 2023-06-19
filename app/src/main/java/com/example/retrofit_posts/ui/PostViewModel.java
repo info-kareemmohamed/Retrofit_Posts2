@@ -1,5 +1,7 @@
 package com.example.retrofit_posts.ui;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -8,25 +10,17 @@ import com.example.retrofit_posts.pojo.PostModel;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class PostViewModel extends ViewModel {
     MutableLiveData<List<PostModel>> mutableLiveData=new MutableLiveData<>();
+    private static final String TAG="POSTMPDEL";
     public void getPost(){
-        PostClient.getInstance().getCall().enqueue(new Callback<List<PostModel>>() {
-            @Override
-            public void onResponse(Call<List<PostModel>> call, Response<List<PostModel>> response) {
-                mutableLiveData.setValue(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<PostModel>> call, Throwable t) {
-
-            }
-        });
-
+        Single<List<PostModel>> single=PostClient.getInstance().getPosts().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        single.subscribe(o -> mutableLiveData.setValue(o),e-> Log.d(TAG,e.getMessage()));
     }
 
 }

@@ -54,7 +54,7 @@ this.list=list;
         }
 
      private void AddData(PostModel post){
-            textId.setText(String.valueOf( post.getId()));
+            textId.setText(String.valueOf( post.getUserId()));
             textTitle.setText(post.getTitle());
             textBody.setText(post.getBody());
      }
